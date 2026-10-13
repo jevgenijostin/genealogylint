@@ -119,6 +119,11 @@ class RelationshipTests(unittest.TestCase):
             with self.subTest(expected=expected):
                 self.assertEqual(relate(self.tree, a, b), expected)
 
+    def test_step_relations_are_not_in_laws(self):
+        tree = parse('0 @A@ INDI\n0 @B@ INDI\n0 @C@ INDI\n0 @F1@ FAM\n1 HUSB @A@\n1 WIFE @B@\n0 @F2@ FAM\n1 HUSB @B@\n1 CHIL @C@')
+        self.assertEqual(relate(tree, 'A', 'C'), 'step-parent')
+        self.assertEqual(relate(tree, 'C', 'A'), 'step-child')
+
     def test_spouse_and_self(self):
         self.assertEqual(relate(self.tree, '@A@', '@PARTNER@'), 'spouse')
         self.assertEqual(relate(self.tree, 'A', 'A'), 'self')

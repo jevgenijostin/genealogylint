@@ -71,13 +71,21 @@ def relate(tree, id1, id2):
     result = blood(a, b, parents)
     if result:
         return result
-    labels = {"parent": "parent-in-law", "child": "child-in-law", "sibling": "sibling-in-law", "half-sibling": "sibling-in-law"}
+    in_law = {"sibling": "sibling-in-law", "half-sibling": "sibling-in-law"}
     for spouse in sorted(spouses[b]):
         result = blood(a, spouse, parents)
-        if result in labels:
-            return labels[result]
+        if result == "parent":
+            return "parent-in-law"
+        if result == "child":
+            return "step-child"
+        if result in in_law:
+            return in_law[result]
     for spouse in sorted(spouses[a]):
         result = blood(spouse, b, parents)
-        if result in labels:
-            return labels[result]
+        if result == "child":
+            return "child-in-law"
+        if result == "parent":
+            return "step-parent"
+        if result in in_law:
+            return in_law[result]
     return "no known relationship"

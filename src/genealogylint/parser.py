@@ -26,6 +26,7 @@ class Family:
 class Tree:
     people: dict[str, Person] = field(default_factory=dict)
     families: dict[str, Family] = field(default_factory=dict)
+    memberships: list[tuple[str, str, str]] = field(default_factory=list)
 
     def parents(self):
         result = {pid: set() for pid in self.people}
@@ -73,6 +74,8 @@ def parse(text: str) -> Tree:
         if isinstance(record, Person) and level == 1 and tag in ("NAME", "SEX"):
             field_name = tag.lower()
             parsed_value = " ".join(value.replace("/", " ").split()) if tag == "NAME" else value.upper()
+        elif isinstance(record, Person) and level == 1 and tag in ("FAMC", "FAMS"):
+            tree.memberships.append((record.id, tag, value))
         elif isinstance(record, Family) and level == 1 and tag in ("HUSB", "WIFE", "CHIL"):
             if not re.fullmatch(r"@[^@\s]+@", value):
                 raise ValueError(f"Line {number}: invalid reference {value}")
@@ -99,6 +102,12 @@ def parse(text: str) -> Tree:
         for pid in fam.spouses + fam.children:
             if pid not in tree.people:
                 raise ValueError(f"{fam.id}: missing individual {pid}")
+    for pid, tag, fid in tree.memberships:
+        if fid not in tree.families:
+            raise ValueError(f"{pid}: missing family {fid}")
+        fam = tree.families[fid]
+        if pid not in (fam.children if tag == "FAMC" else fam.spouses):
+            raise ValueError(f"{pid}: {tag} {fid} is not reciprocated in the family record")
     return tree
 
 

@@ -1,0 +1,8 @@
+0 @A@ INDI
+0 @B@ INDI
+0 @F1@ FAM
+1 HUSB @A@
+1 CHIL @B@
+0 @F2@ FAM
+1 HUSB @B@
+1 CHIL @A@

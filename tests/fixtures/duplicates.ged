@@ -1,0 +1,16 @@
+0 @A@ INDI
+1 NAME Ada /Smith/
+1 BIRT
+2 DATE 1900
+0 @B@ INDI
+1 NAME ada /Smith/
+1 BIRT
+2 DATE 1900
+0 @C@ INDI
+1 NAME John /Smith/
+0 @D@ INDI
+1 NAME John /Smith/
+0 @E@ INDI
+1 NAME Ada /Smith/
+1 BIRT
+2 DATE 1901

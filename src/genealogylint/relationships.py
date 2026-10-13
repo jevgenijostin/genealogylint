@@ -1,4 +1,5 @@
 from collections import deque
+from .validation import cycles
 
 
 def ancestors(person, parents):
@@ -56,6 +57,9 @@ def relate(tree, id1, id2):
     for pid in (a, b):
         if pid not in tree.people:
             raise ValueError(f"Unknown individual: {pid}")
+    parents = tree.parents()
+    if next(cycles(parents), None) is not None:
+        raise ValueError("Circular ancestry: validate and repair the tree before calculating relationships")
     if a == b:
         return "self"
     spouses = {pid: set() for pid in tree.people}
@@ -64,7 +68,6 @@ def relate(tree, id1, id2):
             spouses[pid].update(set(fam.spouses) - {pid})
     if b in spouses[a]:
         return "spouse"
-    parents = tree.parents()
     result = blood(a, b, parents)
     if result:
         return result
